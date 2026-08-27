@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { WebcamUtil } from 'ngx-webcam';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import html2canvas from 'html2canvas';
+import { FotoDTO } from '../../model/FotoDTO';
+import { FotoResponse } from '../../model/FotoResponse';
+import { Servicespictures } from '../../servicespictures';
 
 @Component({
   selector: 'app-foto',
@@ -7,16 +10,67 @@ import { WebcamUtil } from 'ngx-webcam';
   styleUrl: './foto.css',
   templateUrl: './foto.html',
 })
-export class Foto implements OnInit{
-  
-  public altura: number = 1280;
-  public largura: number = 720;
+export class Foto implements OnInit {
+  public loading: boolean = false;
+  public fotoDTO: FotoDTO = new FotoDTO();
+
   public videoOptions: MediaTrackConstraints = {
-    width: {ideal: 1080},
-    height: {ideal: 1920}
+    width: { ideal: 1280 },
+    height: { ideal: 720 }
+  };
+
+  constructor(
+    private service: Servicespictures,
+    private cdr: ChangeDetectorRef   // <-- injetado
+  ) {
+    this.onResize();
   }
-  ngOnInit(): void {
-    
+
+  ngOnInit(): void {}
+
+  public onResize(event?: Event): void {
+    const win = event ? (event.target as Window) : window;
+    this.videoOptions.width = win.innerWidth;
+    this.videoOptions.height = win.innerHeight;
+  }
+
+  public capturarFoto(): void {
+    // Inicia o loading
+    this.loading = true;
+    this.cdr.detectChanges(); // força a exibição do ícone
+
+    const wrapper = document.querySelector('#wrapper');
+    if (!wrapper) {
+      this.loading = false;
+      this.cdr.detectChanges();
+      console.warn('Elemento #wrapper não encontrado');
+      return;
+    }
+
+    html2canvas(wrapper as HTMLElement)
+      .then(canvas => {
+        const base64Str = canvas.toDataURL('image/png');
+        this.fotoDTO.fotoBase64 = base64Str;
+        this.fotoDTO.uuid = '67582601-4399-4c7b-aae3-ced8b5914b04';
+
+        this.service.enviarFoto(this.fotoDTO).subscribe({
+          next: (res: FotoResponse) => {
+            this.loading = false;
+            this.cdr.detectChanges(); // <-- ESSENCIAL
+            console.log('Sucesso:', res);
+            // Se quiser exibir mensagem, pode usar um snackbar ou toast
+          },
+          error: (err: any) => {
+            this.loading = false;
+            this.cdr.detectChanges(); // <-- ESSENCIAL
+            console.error('Erro no envio:', err);
+          }
+        });
+      })
+      .catch(err => {
+        this.loading = false;
+        this.cdr.detectChanges(); // <-- ESSENCIAL
+        console.error('Erro na captura:', err);
+      });
   }
 }
-

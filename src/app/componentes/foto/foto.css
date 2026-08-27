@@ -1,26 +1,14 @@
 #moldura {
     width: 100%;
+    height: 100%;
     position: absolute;
-    z-index: -1;
     top: 0;
     left: 0;
 }
 
-/*
 #botao{
     position: absolute;
-    bottom: 2em;
-    margin-left: auto;
+    z-index: 20;
+    bottom: 10px;
 }
-*/
 
-#camera {
-    
-    z-index: 2;
-    width: 30%;
-
-    top: 50%;
-    left: 10%;
-
-    transform: translate(-50%, -50%);
-}

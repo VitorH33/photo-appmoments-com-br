@@ -1,11 +1,13 @@
+<app-wait-icon *ngIf="loading"></app-wait-icon>
+
 <div class="container">
-  <div class="row">
-    <div class="col-12 text-center">
-        <webcam id="camera" [width]="largura" [height]="altura"></webcam>
-        <!-- <img id="moldura" src="/assets/molduras/moldura2.png" alt=""> -->
+  <div class="row vh-100 vw-100">
+    <div class="col-12 text-center" id="wrapper" (window:resize)="onResize($event)">
+        <webcam id="camera" [videoOptions]="videoOptions"></webcam>
+         <img id="moldura" src="/assets/molduras/moldura01.png" alt=""> 
     </div>
   </div>
 </div>
-<div id="botao" class="position-absolute bottom-3 start-50 translate-middle-x">
-    <button class="btn btn-primary"><i class="bi bi-camera"></i></button>
+<div id="botao" class="position-absolute bottom-1 start-50 translate-middle-x">
+    <button class="btn btn-primary" (click)="capturarFoto()"><i class="bi bi-camera"></i></button>
 </div>
