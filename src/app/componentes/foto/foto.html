@@ -3,7 +3,7 @@
 <div class="container">
   <div class="row vh-100 vw-100">
     <div class="col-12 text-center" id="wrapper" (window:resize)="onResize($event)">
-        <webcam id="camera" [videoOptions]="videoOptions"></webcam>
+        <webcam id="camera" [videoOptions]="videoOptions" [width]="width" [height]="height"></webcam>
          <img id="moldura" src="/assets/molduras/moldura01.png" alt=""> 
     </div>
   </div>

@@ -13,6 +13,8 @@ import { Servicespictures } from '../../servicespictures';
 export class Foto implements OnInit {
   public loading: boolean = false;
   public fotoDTO: FotoDTO = new FotoDTO();
+  public width: number = 720;
+  public height: number = 1200;
 
   public videoOptions: MediaTrackConstraints = {
     width: { ideal: 1280 },
@@ -21,7 +23,7 @@ export class Foto implements OnInit {
 
   constructor(
     private service: Servicespictures,
-    private cdr: ChangeDetectorRef   // <-- injetado
+    private cdr: ChangeDetectorRef   
   ) {
     this.onResize();
   }
@@ -35,9 +37,8 @@ export class Foto implements OnInit {
   }
 
   public capturarFoto(): void {
-    // Inicia o loading
     this.loading = true;
-    this.cdr.detectChanges(); // força a exibição do ícone
+    this.cdr.detectChanges(); 
 
     const wrapper = document.querySelector('#wrapper');
     if (!wrapper) {
@@ -51,25 +52,24 @@ export class Foto implements OnInit {
       .then(canvas => {
         const base64Str = canvas.toDataURL('image/png');
         this.fotoDTO.fotoBase64 = base64Str;
-        this.fotoDTO.uuid = '67582601-4399-4c7b-aae3-ced8b5914b04';
+        this.fotoDTO.uuid = 'f0543cd3-5546-421a-a6d1-f1b2d6764470';
 
         this.service.enviarFoto(this.fotoDTO).subscribe({
           next: (res: FotoResponse) => {
             this.loading = false;
-            this.cdr.detectChanges(); // <-- ESSENCIAL
+            this.cdr.detectChanges(); 
             console.log('Sucesso:', res);
-            // Se quiser exibir mensagem, pode usar um snackbar ou toast
           },
           error: (err: any) => {
             this.loading = false;
-            this.cdr.detectChanges(); // <-- ESSENCIAL
+            this.cdr.detectChanges(); 
             console.error('Erro no envio:', err);
           }
         });
       })
       .catch(err => {
         this.loading = false;
-        this.cdr.detectChanges(); // <-- ESSENCIAL
+        this.cdr.detectChanges();
         console.error('Erro na captura:', err);
       });
   }
